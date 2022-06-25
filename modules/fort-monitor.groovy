@@ -101,8 +101,6 @@ def httpRequest(def method = 'get', def path = '', def query = [:], def headers 
     def rootOb = api.utils.get('root', [:])
     def SERVER = rootOb.fmServer
     def API = '/api/integration/v1/'
-    //def LOGIN = rootOb.fmLogin
-    //def PASSWORD = rootOb.fmPassword
   
     // Определим переменную для хранания результата ответа от сервера
     def serverResponse = ['result':null, 'error':null]
@@ -127,12 +125,10 @@ def httpRequest(def method = 'get', def path = '', def query = [:], def headers 
     //}
     // Опционально включите игнорирование ошибок SSL
     //http.ignoreSSLIssues()
-
     
     // Выполняем запрос к внешней системе и обрабатываем ответ
-    //, query: query
     try {
-        http.get(path: API+path) { response, json ->
+        http.get(path: API+path, query: query) { response, json ->
             if (response.statusLine.statusCode in [200, 201, 204]) {
                 serverResponse['result'] = json//.toString()
             }  
