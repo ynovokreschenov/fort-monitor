@@ -1,8 +1,8 @@
 import groovyx.net.http.HTTPBuilder
 import static groovyx.net.http.ContentType.*
-import groovy.json.JsonBuilder
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.impl.client.HttpClients
+import static groovy.json.JsonOutput.toJson
 
 // авторизация
 // https://glonassagro.com/api/help/index#!/ExternalApiV1/ExternalApiV1_Connect
@@ -81,9 +81,7 @@ def disconnect(def sid){
     try {
         http.get(path: API + METHOD, query: query) { response, json ->
             if (response.statusLine.statusCode in [200, 201, 204]) {
-              //if (json.result == 'Ok'){
                 serverResponse['result'] = json
-              //}
             }  
         }
     } catch (Exception e) {
@@ -96,7 +94,7 @@ def disconnect(def sid){
     return serverResponse
 }
 
-def httpRequest(def method = 'get', def path = '', def query = [:], def headers = [:]){
+def httpRequest(def method = 'get', def path = '', def query = [:], def body, def headers = [:]){
     // ПАРАМЕТРЫ СЕРВЕРА
     def rootOb = api.utils.get('root', [:])
     def SERVER = rootOb.fmServer
@@ -104,9 +102,6 @@ def httpRequest(def method = 'get', def path = '', def query = [:], def headers 
   
     // Определим переменную для хранания результата ответа от сервера
     def serverResponse = ['result':null, 'error':null]
-
-    //Формируем параметры в формате json
-    //def parameters = new JsonBuilder(body)
 
     //Создайте HTTP клиента
     def TIMEOUT = 10000
@@ -128,10 +123,19 @@ def httpRequest(def method = 'get', def path = '', def query = [:], def headers 
     
     // Выполняем запрос к внешней системе и обрабатываем ответ
     try {
-        http.get(path: API+path, query: query) { response, json ->
-            if (response.statusLine.statusCode in [200, 201, 204]) {
-                serverResponse['result'] = json//.toString()
-            }  
+        if (method == 'get'){
+            http.get(path: API+path, query: query) { response, json ->
+                if (response.statusLine.statusCode in [200, 201, 204]) {
+                    serverResponse['result'] = json
+                }  
+            }
+        }
+        if (method == 'post'){
+            http.post(path: API+path, query: query, body: toJson(body)) { response, json ->
+                if (response.statusLine.statusCode in [200, 201, 204]) {
+                    serverResponse['result'] = json
+                }  
+            }
         }
     } catch (Exception e) {
         logger.error("Возникла ошибка при попытке обмена данными с ${SERVER}", e)
