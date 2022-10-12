@@ -8,6 +8,7 @@ def accountInfo = modules.fortmonitor.httpRequest(
   query=[
     'accountNumber':fmAccountNumber
     ],
+  body = [:],
   headers=[
     'SessionId':sid
     ]

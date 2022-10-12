@@ -12,6 +12,7 @@ def accountInfo = modules.fortmonitor.httpRequest(
     'balance':balance,
     'description':description
     ],
+  body = [:],
   headers=[
     'SessionId':sid
     ]

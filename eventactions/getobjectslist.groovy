@@ -1,8 +1,16 @@
+//[Fort-monitor] Обновить список объектов компании
 def companyId = subject.fmAccount?.fmId
 def sid = modules.fortmonitor.connect().result
-def objectList = modules.fortmonitor.httpRequest('get', 'getobjectslist', ['companyId':companyId], headers=['SessionId':sid]).result.objects//.size()
+def objectList = modules.fortmonitor.httpRequest(
+  method = 'get',
+  path = 'getobjectslist',
+  query = ['companyId':companyId],
+  body = [:],
+  headers=[
+    'SessionId':sid
+  ]
+).result.objects//.size()
 modules.fortmonitor.disconnect()
-//return objectList
 
 objectList.each{
   def fmId = it.id
@@ -32,3 +40,4 @@ objectList.each{
     utils.edit(fmObject, objectParams)
   }
 }
+// теперь нужно заархивировать объекты, которых нет в objectList

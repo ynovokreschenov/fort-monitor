@@ -94,7 +94,7 @@ def disconnect(def sid){
     return serverResponse
 }
 
-def httpRequest(def method = 'get', def path = '', def query = [:], def body, def headers = [:]){
+def httpRequest(def method = 'get', def path = '', def query = [:], def body = [:], def headers = [:]){
     // ПАРАМЕТРЫ СЕРВЕРА
     def rootOb = api.utils.get('root', [:])
     def SERVER = rootOb.fmServer
