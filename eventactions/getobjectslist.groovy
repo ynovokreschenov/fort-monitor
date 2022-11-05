@@ -1,3 +1,4 @@
+// DEPRECATED
 //[Fort-monitor] Обновить список объектов компании
 def companyId = subject.fmAccount?.fmId
 def sid = modules.fortmonitor.connect().result
