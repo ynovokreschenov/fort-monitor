@@ -20,23 +20,20 @@ companyList.each{
             def fmAccount = createOrUpdatefmAccount(item)
             def companyObj = fmAccount.fmCompany
             if (companyObj){
-                def beforeImportCompanyObjList = utils.find('ou$fmObject', ['parent':companyObj]) //, 'removed':false
+                def beforeImportCompanyObjList = utils.find('ou$fmObject', ['parent':companyObj, 'removed':false])
                 def importedCompanyObjList = []
                 // группы / объекты
                 def childrenObjects = item.children
-                if (item.name == 'Добронравов'){
-                    return childrenObjects
-                }
                 if (childrenObjects){
                     childrenObjects.each{ obj->
-                        if (obj.leaf.toBoolean() == true){
-                            //importedCompanyObjList.add(createOrUpdateObject(obj, companyObj))
+                        if (obj.leaf.toBoolean() == true && obj.IsGroup.toBoolean() == false){
+                            importedCompanyObjList.add(createOrUpdateObject(obj, companyObj))
                         } else {
                             def childrenNext = obj.children
                             if (childrenNext){
                                 childrenNext.each{ itm ->
-                                    if (itm.leaf.toBoolean() == true){
-                                        //importedCompanyObjList.add(createOrUpdateObject(itm, companyObj))
+                                    if (itm.leaf.toBoolean() == true && itm.IsGroup.toBoolean() == false){
+                                        importedCompanyObjList.add(createOrUpdateObject(itm, companyObj))
                                     }
                                 }
                             }
@@ -44,10 +41,10 @@ companyList.each{
                     }
                 }
                 // заархивируем объекты, которых нет в импорте
-                //def restObjects = beforeImportCompanyObjList-importedCompanyObjList
-                //restObjects.each{ rmObj->
-                //    utils.edit(rmObj, ['removed':true])
-                //}
+                def restObjects = beforeImportCompanyObjList-importedCompanyObjList
+                restObjects.each{ rmObj->
+                    utils.edit(rmObj, ['removed':true])
+                }
             }
         }
     }
@@ -87,16 +84,13 @@ def createOrUpdateObject(obj, companyObj){
         'removed':false,
         'parent':companyObj
     ]
-    def fmObject = utils.findFirst('ou$fmObject', ['fmId':fmId])
+    def fmObject = utils.findFirst('ou$fmObject', ['fmId':fmId, 'parent':companyObj])
     if (!fmObject){
-        //api.tx.call{
-            fmObject = utils.create('ou$fmObject', ['fmId':fmId]+objectParams)
-        //}
+        fmObject = utils.create('ou$fmObject', ['fmId':fmId]+objectParams)
     } else {
-        //api.tx.call{
+        api.tx.call{
             utils.edit(fmObject, objectParams)
-        //}
+        }
     }
-    //}
     return fmObject
 }

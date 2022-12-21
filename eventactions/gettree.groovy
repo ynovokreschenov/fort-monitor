@@ -25,15 +25,61 @@ companyList.each{
                 // группы / объекты
                 def childrenObjects = item.children
                 if (childrenObjects){
-                    childrenObjects.each{ obj->
-                        if (obj.leaf.toBoolean() == true && itm.IsGroup.toBoolean() == false){
-                            importedCompanyObjList.add(createOrUpdateObject(obj, companyObj))
+                    childrenObjects.each{ obj_level1->
+                        if (obj_level1.leaf.toBoolean() == true && obj_level1.IsGroup.toBoolean() == false){
+                            importedCompanyObjList.add(createOrUpdateObject(obj_level1, companyObj))
                         } else {
-                            def childrenNext = obj.children
-                            if (childrenNext){
-                                childrenNext.each{ itm ->
-                                    if (itm.leaf.toBoolean() == true && itm.IsGroup.toBoolean() == false){
-                                        importedCompanyObjList.add(createOrUpdateObject(itm, companyObj))
+                            def childrenLevel2 = obj_level1.children
+                            if (childrenLevel2){
+                                childrenLevel2.each{ obj_level2 ->
+                                    if (obj_level2.leaf.toBoolean() == true && obj_level2.IsGroup.toBoolean() == false){
+                                        importedCompanyObjList.add(createOrUpdateObject(obj_level2, companyObj))
+                                    } else {
+                                        def childrenLevel3 = obj_level2.children
+                                        if (childrenLevel3){
+                                            childrenLevel3.each{ obj_level3 ->
+                                                if (obj_level3.leaf.toBoolean() == true && obj_level3.IsGroup.toBoolean() == false){
+                                                    importedCompanyObjList.add(createOrUpdateObject(obj_level3, companyObj))
+                                                } else {
+                                                    def childrenLevel4 = obj_level3.children
+                                                    if (childrenLevel4){
+                                                        childrenLevel4.each{ obj_level4 ->
+                                                            if (obj_level4.leaf.toBoolean() == true && obj_level4.IsGroup.toBoolean() == false){
+                                                                importedCompanyObjList.add(createOrUpdateObject(obj_level4, companyObj))
+                                                            }
+                                                            else {
+                                                                def childrenLevel5 = obj_level4.children
+                                                                if (childrenLevel5){
+                                                                    childrenLevel5.each{ obj_level5 ->
+                                                                        if (obj_level5.leaf.toBoolean() == true && obj_level5.IsGroup.toBoolean() == false){
+                                                                            importedCompanyObjList.add(createOrUpdateObject(obj_level5, companyObj))
+                                                                        } else {
+                                                                            def childrenLevel6 = obj_level5.children
+                                                                            if (childrenLevel6){
+                                                                                childrenLevel6.each{ obj_level6 ->
+                                                                                    if (obj_level6.leaf.toBoolean() == true && obj_level6.IsGroup.toBoolean() == false){
+                                                                                        importedCompanyObjList.add(createOrUpdateObject(obj_level6, companyObj))
+                                                                                    } else {
+                                                                                        def childrenLevel7 = obj_level6.children
+                                                                                        if (childrenLevel7){
+                                                                                            childrenLevel7.each{ obj_level7 ->
+                                                                                                if (obj_level7.leaf.toBoolean() == true && obj_level7.IsGroup.toBoolean() == false){
+                                                                                                    importedCompanyObjList.add(createOrUpdateObject(obj_level7, companyObj))
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
